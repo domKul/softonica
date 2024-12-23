@@ -5,8 +5,8 @@ import jakarta.validation.constraints.*;
 public record UserRegisterDto(
         @NotBlank(message = "{user.username.not.null}")
         @Pattern(
-                regexp = "^(?!.*\\b(admin|administrator|root|system|mod|" +
-                        "moderator|support|superuser|ceo|cto|developer|founder)\\b)[a-zA-Z0-9]+$",
+                regexp = "^(?!.*(admin|administrator|root|system|mod|moderator|support|superuser|" +
+                        "ceo|cto|developer|founder|softonica|softonic|service|staff)).*[a-zA-Z0-9]+$",
                 message = "{user.name.validation}"
         )
         String username,
