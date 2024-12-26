@@ -1,0 +1,35 @@
+package com.softonicabackend.domain.system;
+
+
+import com.softonicabackend.domain.system.dto.UserRegisterDto;
+import com.softonicabackend.domain.system.dto.UserRegisterResponseDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+
+@RequiredArgsConstructor
+class UserRegisterService implements UserRegistration {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder bCryptPasswordEncoder;
+    private final UserValidationChecker userValidation;
+
+    @Value("${user.registration.success}")
+    private String registrationSuccessMessage;
+
+
+    @Override
+    public UserRegisterResponseDto registerUser(UserRegisterDto userRegisterDto) {
+        userValidation.validationProcessor(userRegisterDto);
+        UserEntity userToSave = createUserObject(userRegisterDto);
+        userRepository.save(userToSave);
+        return new UserRegisterResponseDto(registrationSuccessMessage);
+    }
+
+    UserEntity createUserObject(UserRegisterDto userRegisterDto) {
+        return new UserEntity(userRegisterDto.username(),
+                userRegisterDto.email(),
+                bCryptPasswordEncoder.encode(userRegisterDto.password()));
+    }
+}
