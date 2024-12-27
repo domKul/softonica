@@ -1,9 +1,9 @@
 package com.softonicabackend.infrastructure.validation;
 
-import com.softonicabackend.domain.system.exception.DifferentPasswordException;
-import com.softonicabackend.domain.system.exception.PrivacyPolicyAndTermsException;
-import com.softonicabackend.domain.system.exception.UserAlreadyExistException;
-import com.softonicabackend.domain.system.exception.UserNotFoundException;
+import com.softonicabackend.domain.system.exception.user.DifferentPasswordException;
+import com.softonicabackend.domain.system.exception.user.PrivacyPolicyAndTermsException;
+import com.softonicabackend.domain.system.exception.user.UserAlreadyExistException;
+import com.softonicabackend.domain.system.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

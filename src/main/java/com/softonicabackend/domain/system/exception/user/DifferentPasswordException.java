@@ -1,4 +1,4 @@
-package com.softonicabackend.domain.system.exception;
+package com.softonicabackend.domain.system.exception.user;
 
 public class DifferentPasswordException extends RuntimeException {
 
