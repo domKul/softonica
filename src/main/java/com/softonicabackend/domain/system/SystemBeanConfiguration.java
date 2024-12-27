@@ -1,5 +1,6 @@
 package com.softonicabackend.domain.system;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,9 +20,9 @@ class SystemBeanConfiguration {
 
     @Bean
     UserRegisterService userRegisterService(UserRepository userRepository,
-                                            UserValidationChecker userValidationChecker) {
+                                            UserValidationChecker userValidationChecker, HttpServletRequest httpServletRequest) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return new UserRegisterService(userRepository, passwordEncoder, userValidationChecker);
+        return new UserRegisterService(userRepository, passwordEncoder, userValidationChecker,httpServletRequest);
     }
 
     @Bean

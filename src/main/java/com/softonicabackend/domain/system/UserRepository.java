@@ -11,5 +11,6 @@ interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByEmail(String email);
     @Query("SELECT u FROM UserEntity u WHERE u.username = :login OR u.email = :login")
     Optional<UserEntity> findByUsernameOrEmail(@Param("login") String login);
+    void deleteByUsername(String username);
     Optional<UserEntity> findByUsername(String username);
 }
