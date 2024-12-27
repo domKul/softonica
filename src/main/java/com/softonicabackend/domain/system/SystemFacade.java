@@ -10,16 +10,20 @@ public class SystemFacade {
 
     private final UserRegistration userRegistration;
     private final UserFinder userFinderService;
-    private final UserLoginFailureService userLoginFailureService;
 
 
-    public UserRegisterResponseDto register(UserRegisterDto userRegisterDto) {
+    public UserRegisterResponseDto register(UserRegisterDto userRegisterDto){
         return userRegistration.registerUser(userRegisterDto);
     }
 
     public GetLoggedUserDto findUserByUsername(String username) {
         return userFinderService.getLoggedUser(username);
     }
+
+    public void deleteUserByUsername(String username) {
+        userRegistration.deleteLoggedUser(username);
+    }
+}
 
     public boolean checkIfAccountIsLocked(String username) {
         return userFinderService.checkIfAccountIsLocked(username);
