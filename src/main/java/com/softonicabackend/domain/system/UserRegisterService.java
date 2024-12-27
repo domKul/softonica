@@ -1,12 +1,10 @@
 package com.softonicabackend.domain.system;
 
-
 import com.softonicabackend.domain.system.dto.UserRegisterDto;
 import com.softonicabackend.domain.system.dto.UserRegisterResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 
 @RequiredArgsConstructor
 class UserRegisterService implements UserRegistration {
@@ -22,12 +20,12 @@ class UserRegisterService implements UserRegistration {
     @Override
     public UserRegisterResponseDto registerUser(UserRegisterDto userRegisterDto) {
         userValidation.validationProcessor(userRegisterDto);
-        UserEntity userToSave = createUserObject(userRegisterDto);
+        UserEntity userToSave = createUserObjectAndPasswordEncode(userRegisterDto);
         userRepository.save(userToSave);
         return new UserRegisterResponseDto(registrationSuccessMessage);
     }
 
-    UserEntity createUserObject(UserRegisterDto userRegisterDto) {
+    UserEntity createUserObjectAndPasswordEncode(UserRegisterDto userRegisterDto) {
         return new UserEntity(userRegisterDto.username(),
                 userRegisterDto.email(),
                 bCryptPasswordEncoder.encode(userRegisterDto.password()));

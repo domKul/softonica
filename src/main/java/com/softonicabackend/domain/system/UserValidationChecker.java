@@ -1,10 +1,10 @@
 package com.softonicabackend.domain.system;
 
 import com.softonicabackend.domain.system.dto.UserRegisterDto;
-import com.softonicabackend.domain.system.exception.DifferentPasswordException;
-import com.softonicabackend.domain.system.exception.PrivacyPolicyAndTermsException;
-import com.softonicabackend.domain.system.exception.UserAlreadyExistException;
-import com.softonicabackend.domain.system.exception.UserExceptionMessages;
+import com.softonicabackend.domain.system.exception.user.DifferentPasswordException;
+import com.softonicabackend.domain.system.exception.user.PrivacyPolicyAndTermsException;
+import com.softonicabackend.domain.system.exception.user.UserAlreadyExistException;
+import com.softonicabackend.domain.system.exception.user.UserExceptionMessages;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

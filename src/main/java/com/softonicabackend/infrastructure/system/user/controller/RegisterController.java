@@ -1,4 +1,4 @@
-package com.softonicabackend.infrastructure.user.controller;
+package com.softonicabackend.infrastructure.system.user.controller;
 
 
 import com.softonicabackend.domain.system.SystemFacade;
@@ -20,11 +20,7 @@ class RegisterController {
 
     @PostMapping("/register")
     ResponseEntity<UserRegisterResponseDto> register(@RequestBody  @Valid UserRegisterDto registerUserDto) {
-        UserRegisterResponseDto registerResult = systemFacade.register(
-                new UserRegisterDto(registerUserDto.username(), registerUserDto.password(),
-                        registerUserDto.confirmPassword(), registerUserDto.email(),
-                        registerUserDto.termsAccepted(),
-                        registerUserDto.privacyPolicyAccepted()));
+        UserRegisterResponseDto registerResult = systemFacade.register(registerUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(registerResult);
     }
 }

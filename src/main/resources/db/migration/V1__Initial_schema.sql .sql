@@ -11,10 +11,6 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE =
 -- -----------------------------------------------------
 -- Schema softonica
 -- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema softonica
--- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `softonica` DEFAULT CHARACTER SET utf8;
 USE `softonica`;
 

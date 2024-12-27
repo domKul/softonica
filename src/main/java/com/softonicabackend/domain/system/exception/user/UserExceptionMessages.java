@@ -1,4 +1,4 @@
-package com.softonicabackend.domain.system.exception;
+package com.softonicabackend.domain.system.exception.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
