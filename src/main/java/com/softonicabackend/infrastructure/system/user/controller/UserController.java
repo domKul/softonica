@@ -18,6 +18,6 @@ class UserController {
     ResponseEntity<Void> deleteUser() {
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
         userFacade.deleteUserByUsername(loggedUser);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
