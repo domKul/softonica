@@ -8,8 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 class SystemBeanConfiguration {
     @Bean
-    SystemFacade systemFacade(UserRegistration userRegistration) {
-        return new SystemFacade(userRegistration);
+    SystemFacade systemFacade(UserRegistration userRegistration,UserFinder userFinder) {
+        return new SystemFacade(userRegistration, userFinder);
     }
 
     @Bean
@@ -22,5 +22,10 @@ class SystemBeanConfiguration {
                                             UserValidationChecker userValidationChecker) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return new UserRegisterService(userRepository, passwordEncoder, userValidationChecker);
+    }
+
+    @Bean
+    UserFinderService userFinderService(UserRepository userRepository) {
+        return new UserFinderService(userRepository);
     }
 }
