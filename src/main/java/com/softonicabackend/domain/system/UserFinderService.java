@@ -18,7 +18,7 @@ class UserFinderService implements UserFinder {
     public GetLoggedUserDto getLoggedUser(String login) {
         UserEntity userEntity = userRepository.findByUsernameOrEmail(login)
                 .orElseThrow(() -> new UserNotFoundException(UserExceptionMessages.USER_NOT_FOUND.getMessage()));
-        userEntity.setLastlogon(Instant.now());
+        userEntity.setLastLogin(Instant.now());
         return UserMapper.mapToGetLoggedUserDto(userEntity);
     }
 }

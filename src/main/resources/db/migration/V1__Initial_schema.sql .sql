@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `softonica`.`users`
     `failures`  BIT(3)       NOT NULL DEFAULT 0,
     `locked`    BIT(1)       NOT NULL DEFAULT 0,
     `active`    BIT(1)       NOT NULL DEFAULT 1,
-    `created`   DATETIME     NOT NULL,
+    `created`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `lastlogin` DATETIME     NULL,
     `deleted`   DATETIME     NULL,
     PRIMARY KEY (`id`),

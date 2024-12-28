@@ -34,8 +34,8 @@ class UserEntity {
     @Column(insertable = false, updatable = false)
     private LocalDateTime created;
     private LocalDateTime deleted;
-    @Column(name = "lastlogon")
-    private Instant lastlogon;
+    @Column(name = "lastlogin")
+    private Instant lastLogin;
 
     public UserEntity(String username, String email, String password) {
         this.username = username;
