@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SystemFacade {
 
-    private final UserRegistration userRegistration;
-    private final UserFinder userFinderService;
+    private final UserRegisterService userRegistration;
+    private final UserFinderService userFinderService;
 
 
     public UserRegisterResponseDto register(UserRegisterDto userRegisterDto){
