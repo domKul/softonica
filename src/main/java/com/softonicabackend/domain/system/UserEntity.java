@@ -31,7 +31,7 @@ class UserEntity {
     private boolean locked = false;
     @Column(nullable = false)
     private int failures = 0;
-    @Column(insertable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime created;
     private LocalDateTime deleted;
     @Column(name = "lastlogin")
