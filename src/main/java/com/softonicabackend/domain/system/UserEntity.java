@@ -31,11 +31,11 @@ class UserEntity {
     private boolean locked = false;
     @Column(nullable = false)
     private int failures = 0;
-    @Column(insertable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime created;
     private LocalDateTime deleted;
-    @Column(name = "lastlogon")
-    private Instant lastlogon;
+    @Column(name = "lastlogin")
+    private Instant lastLogin;
 
     public UserEntity(String username, String email, String password) {
         this.username = username;
