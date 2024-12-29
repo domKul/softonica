@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `softonica`.`verifications`
 (
     `id`       INT          NOT NULL AUTO_INCREMENT,
     `userid`   INT          NOT NULL,
-    `token`    VARCHAR(800) NOT NULL,
+    `token`    VARCHAR(512) NOT NULL,
     `expire`   DATETIME     NOT NULL,
     `approved` DATETIME     NULL,
     PRIMARY KEY (`id`),
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `softonica`.`resetpasswords`
 (
     `id`       INT          NOT NULL AUTO_INCREMENT,
     `userid`   INT          NOT NULL,
-    `token`    VARCHAR(255) NOT NULL,
+    `token`    VARCHAR(512) NOT NULL,
     `expire`   DATETIME     NOT NULL,
     `approved` DATETIME     NULL,
     PRIMARY KEY (`id`),
