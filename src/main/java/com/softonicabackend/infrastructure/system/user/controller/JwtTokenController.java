@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/user")
 @RequiredArgsConstructor
-@Tag(name = "Login", description = "By this endpoint registered user can login and generate JWT token")
+@Tag(name = "Login", description = "Login and generate token for Registered user")
 class JwtTokenController {
 
     private final JwtAuthenticator jwtAuthenticator;

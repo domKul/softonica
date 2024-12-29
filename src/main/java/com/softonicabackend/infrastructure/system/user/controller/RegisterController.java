@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/user")
 @RequiredArgsConstructor
 @CrossOrigin("*")
-@Tag(name = "Register", description = "This endpoint allowing " +
-        "you to register an account")
+@Tag(name = "Register", description = "Register new account")
 class RegisterController {
 
     private final SystemFacade systemFacade;
