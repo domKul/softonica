@@ -22,12 +22,19 @@ import java.util.Collections;
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
     private final JwtConfigurationProperties properties;
+    private final JwtTokenService jwtTokenService;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
-        if (authorization == null) {
+        if (authorization == null || !jwtTokenService.isTokenValid(authorization.substring(7))) {
             filterChain.doFilter(request, response);
+            return;
+        }
+        String token = authorization.substring(7);
+        if (!jwtTokenService.isTokenValid(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getUsernamePasswordAuthenticationToken(authorization);

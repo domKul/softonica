@@ -2,15 +2,10 @@ package com.softonicabackend.infrastructure.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.softonicabackend.domain.system.SystemFacade;
 import com.softonicabackend.domain.system.dto.JwtResponseDto;
 import com.softonicabackend.domain.system.dto.TokenRequestDto;
-import com.softonicabackend.domain.system.exception.user.UserExceptionMessages;
-import com.softonicabackend.domain.system.exception.user.UserLockedException;
-import com.softonicabackend.infrastructure.email.Publisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -25,6 +20,8 @@ public class JwtAuthenticator  extends Publisher {
     private final AuthenticationManager authenticationManager;
     private final Clock clock;
     private final JwtConfigurationProperties properties;
+    private final JwtTokenService token;
+
     private final SystemFacade systemFacade;
 
     public JwtResponseDto authenticateAndGenerateToken(TokenRequestDto tokenRequestDto) {
@@ -60,12 +57,14 @@ public class JwtAuthenticator  extends Publisher {
         Instant now = LocalDateTime.now(clock).toInstant(ZoneOffset.UTC);
         Instant expiresAt = now.plus(Duration.ofHours(properties.expirationTimeInHours()));
         String issuer = properties.issuer();
-        return JWT.create()
+        String jwt = JWT.create()
                 .withSubject(user.getUsername())
                 .withIssuedAt(now)
                 .withExpiresAt(expiresAt)
                 .withIssuer(issuer)
                 .sign(algorithm);
+        token.invalidateToken();
+        return jwt;
     }
 
     private JwtResponseDto buildJwtResponse(String token, String username) {

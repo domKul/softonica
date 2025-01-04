@@ -4,7 +4,9 @@ import com.softonicabackend.domain.system.dto.UserRegisterDto;
 import com.softonicabackend.domain.system.dto.UserRegisterResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 class UserRegisterService implements UserRegistration {
 
@@ -44,12 +47,12 @@ class UserRegisterService implements UserRegistration {
         Optional<UserEntity> userOptional = userRepository.findByUsernameOrEmail(username);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            if (user.getLastlogon() == null) {
-                return userRepository.deleteByUsername(username);
-            } else {
+            if (user.getLastlogon() != null && user.getDeleted() != null) {
                 user.setDeleted(LocalDateTime.now());
                 forceLogout();
                 return true;
+            } else {
+                return userRepository.deleteByUsername(username);
             }
         }
         return false;
@@ -58,5 +61,6 @@ class UserRegisterService implements UserRegistration {
     void forceLogout() {
         new SecurityContextLogoutHandler().logout(httpServletRequest,
                 null, null);
+        log.info("SecurityContext cleared");
     }
 }

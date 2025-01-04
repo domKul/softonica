@@ -6,7 +6,9 @@ class UserMapper {
 
     static GetLoggedUserDto mapToGetLoggedUserDto(UserEntity user){
         return new GetLoggedUserDto(
-                user.getUsername(), user.getPassword()
+                user.getUsername(),
+                user.getPassword(),
+                user.getDeleted()
         );
     }
 }

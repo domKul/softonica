@@ -16,8 +16,14 @@ class UserFinderService implements UserFinder {
     @Override
     @Transactional
     public GetLoggedUserDto getLoggedUser(String login) {
-        UserEntity userEntity = findUserEntityByLogin(login);
-        userEntity.setLastLogin(Instant.now().plus(1, ChronoUnit.HOURS));
+        UserEntity userEntity = userRepository.findByUsernameOrEmail(login)
+                .filter(user->user.getDeleted() == null)
+                .orElseThrow(() -> new UserNotFoundException(UserExceptionMessages.USER_NOT_FOUND.getMessage()));
+
+        if (userEntity == null) {
+            throw new UserNotFoundException(UserExceptionMessages.USER_NOT_FOUND.getMessage());
+        }
+        userEntity.setLastlogon(Instant.now());
         return UserMapper.mapToGetLoggedUserDto(userEntity);
     }
 

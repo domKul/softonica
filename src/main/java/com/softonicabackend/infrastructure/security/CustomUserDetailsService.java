@@ -3,6 +3,7 @@ package com.softonicabackend.infrastructure.security;
 import com.softonicabackend.domain.system.SystemFacade;
 import com.softonicabackend.domain.system.dto.GetLoggedUserDto;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,9 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         GetLoggedUserDto userByUsername;
         try {
             userByUsername = systemFacade.findUserByUsername(username);
-
-        } catch (Exception e) {
-            throw new UsernameNotFoundException("user not found");
+            if(userByUsername.deleted() != null) {
+                throw new BadCredentialsException("Username " + username + " not found");
+            }
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("user not found");
         }
         return getUser(userByUsername);
     }
