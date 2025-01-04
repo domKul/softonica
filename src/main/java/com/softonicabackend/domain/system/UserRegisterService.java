@@ -5,9 +5,14 @@ import com.softonicabackend.domain.system.dto.UserRegisterResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 class UserRegisterService implements UserRegistration {
@@ -37,9 +42,18 @@ class UserRegisterService implements UserRegistration {
 
     @Override
     @Transactional
-    public void deleteLoggedUser(String username) {
-        userRepository.deleteByUsername(username);
-        forceLogout();
+    public boolean deleteLoggedUser(String username) {
+        Optional<UserEntity> userOptional = userRepository.findByUsernameOrEmail(username);
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+            if (user.getLastlogon() == null) {
+                return userRepository.deleteByUsername(username);
+            } else {
+                user.setDeleted(LocalDateTime.now());
+                return true;
+            }
+        }
+        return false;
     }
 
     void forceLogout() {
