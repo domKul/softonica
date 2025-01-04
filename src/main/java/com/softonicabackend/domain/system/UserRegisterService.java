@@ -50,16 +50,9 @@ class UserRegisterService implements UserRegistration {
                 return userRepository.deleteByUsername(username);
             } else {
                 user.setDeleted(LocalDateTime.now());
-                forceLogout();
                 return true;
             }
         }
         return false;
-    }
-
-    void forceLogout() {
-        new SecurityContextLogoutHandler().logout(httpServletRequest,
-                null, null);
-        log.info("SecurityContext cleared");
     }
 }

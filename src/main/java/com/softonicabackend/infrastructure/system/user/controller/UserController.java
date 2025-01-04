@@ -22,9 +22,8 @@ class UserController {
     @DeleteMapping("/delete")
     ResponseEntity<Void> deleteUser() {
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        userFacade.deleteUserByUsername(loggedUser);
-        jwtTokenService.invalidateToken();
-        SecurityContextHolder.getContextHolderStrategy().clearContext();
+        boolean deletedUser = userFacade.deleteUserByUsername(loggedUser);
+        jwtTokenService.invalidateToken(deletedUser);
         return ResponseEntity.ok().build();
     }
 }

@@ -20,8 +20,8 @@ public class SystemFacade {
         return userFinderService.getLoggedUser(username);
     }
 
-    public void deleteUserByUsername(String username) {
-        userRegistration.deleteLoggedUser(username);
+    public boolean deleteUserByUsername(String username) {
+       return userRegistration.deleteLoggedUser(username);
     }
 }
 

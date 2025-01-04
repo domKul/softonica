@@ -13,9 +13,12 @@ public class JwtTokenService {
     private final HttpServletRequest request;
     private final ConcurrentHashMap<String, Boolean> invalidatedTokens = new ConcurrentHashMap<>();
 
-    public void invalidateToken() {
-        String bearerTokenFromRequest = getBearerTokenFromRequest();
-        invalidatedTokens.put(bearerTokenFromRequest, false);
+    public void invalidateToken(boolean isDeleted) {
+        if (isDeleted) {
+            String bearerTokenFromRequest = getBearerTokenFromRequest();
+            assert bearerTokenFromRequest != null;
+            invalidatedTokens.put(bearerTokenFromRequest, false);
+        }
     }
 
     public boolean isTokenValid(String token) {
