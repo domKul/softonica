@@ -23,11 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         GetLoggedUserDto userByUsername;
         try {
             userByUsername = systemFacade.findUserByUsername(username);
-            if(userByUsername.deleted() != null) {
-                throw new BadCredentialsException("Username " + username + " not found");
+            if (userByUsername.deleted() != null) {
+                throw new BadCredentialsException("user not found");
             }
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("user not found");
+            throw new BadCredentialsException("Username " + username + " not found");
         }
         return getUser(userByUsername);
     }

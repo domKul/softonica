@@ -2,7 +2,6 @@ package com.softonicabackend.infrastructure.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;

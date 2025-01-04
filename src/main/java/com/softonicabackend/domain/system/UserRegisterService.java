@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,12 +46,12 @@ class UserRegisterService implements UserRegistration {
         Optional<UserEntity> userOptional = userRepository.findByUsernameOrEmail(username);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            if (user.getLastlogon() != null && user.getDeleted() != null) {
+            if (user.getLastlogon() == null ) {
+                return userRepository.deleteByUsername(username);
+            } else {
                 user.setDeleted(LocalDateTime.now());
                 forceLogout();
                 return true;
-            } else {
-                return userRepository.deleteByUsername(username);
             }
         }
         return false;
