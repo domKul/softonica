@@ -5,12 +5,10 @@ import com.softonicabackend.domain.system.dto.UserRegisterResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -50,6 +48,7 @@ class UserRegisterService implements UserRegistration {
                 return userRepository.deleteByUsername(username);
             } else {
                 user.setDeleted(LocalDateTime.now());
+                forceLogout();
                 return true;
             }
         }
