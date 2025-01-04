@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
 class UserFinderService implements UserFinder {

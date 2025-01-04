@@ -22,6 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         GetLoggedUserDto userByUsername;
         try {
             userByUsername = systemFacade.findUserByUsername(username);
+
         } catch (Exception e) {
             throw new UsernameNotFoundException("user not found");
         }
