@@ -2,6 +2,8 @@ package com.softonicabackend.domain.system;
 
 import com.softonicabackend.domain.system.dto.UserRegisterDto;
 import com.softonicabackend.domain.system.dto.UserRegisterResponseDto;
+import com.softonicabackend.domain.system.exception.user.DifferentPasswordException;
+import com.softonicabackend.domain.system.exception.user.PrivacyPolicyAndTermsException;
 import com.softonicabackend.domain.system.exception.user.UserAlreadyExistException;
 import com.softonicabackend.domain.system.exception.user.UserExceptionMessages;
 import org.junit.jupiter.api.Test;
@@ -56,6 +58,32 @@ public class SystemFacadeTest implements UsersExample {
         assertThat(userAlreadyExistException.getMessage())
                 .isEqualTo(UserExceptionMessages.EMAIL_ALREADY_TAKEN.getMessage());
     }
+
+    @Test
+    void shouldThrowExceptionWhenTermsAreNotValid() {
+        //Given
+        UserRegisterDto user = user1WithoutTermsAccepted();
+        //When
+        PrivacyPolicyAndTermsException privacyPolicyAndTermsException = assertThrows(PrivacyPolicyAndTermsException.class,
+                () -> systemFacade.register(user));
+        //Then
+        assertThat(privacyPolicyAndTermsException.getMessage())
+                .isEqualTo(UserExceptionMessages.PRIVACY_POLICY_AND_TERMS_REQUIRED.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPasswordIsDifferentThenConfirmPassword() {
+        //Given
+        UserRegisterDto user = user1WithDifferentPasswords();
+        //When
+        DifferentPasswordException differentPasswordException = assertThrows(DifferentPasswordException.class,
+                () -> systemFacade.register(user));
+        //Then
+        assertThat(differentPasswordException.getMessage())
+                .isEqualTo(UserExceptionMessages.DIFFERENT_PASSWORD.getMessage());
+    }
+
+
 
 
 }

@@ -14,7 +14,7 @@ public interface UsersExample {
                 "Password1","Password1","1user@gmail.com",
                 true, true);
     }
-    default UserRegisterDto user1WithDifferentPassword(){
+    default UserRegisterDto user1WithDifferentPasswords(){
         return new UserRegisterDto("username",
                 "Password1","Password12","1user@gmail.com",
                 true, true);
@@ -23,5 +23,10 @@ public interface UsersExample {
         return new UserRegisterDto("username",
                 "Password","Password","1user@gmail.com",
                 true, true);
+    }
+    default UserRegisterDto user1WithoutTermsAccepted(){
+        return new UserRegisterDto("username",
+                "Password","Password","1user@gmail.com",
+                false, true);
     }
 }
