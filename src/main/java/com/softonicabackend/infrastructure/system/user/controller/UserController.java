@@ -23,7 +23,7 @@ class UserController {
     ResponseEntity<Void> deleteUser() {
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
         boolean deletedUser = userFacade.deleteUserByUsername(loggedUser);
-        jwtTokenService.invalidateToken(deletedUser);
+        jwtTokenService.invalidateToken(deletedUser,loggedUser);
         return ResponseEntity.ok().build();
     }
 }
