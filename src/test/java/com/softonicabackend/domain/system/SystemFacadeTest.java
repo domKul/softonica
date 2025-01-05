@@ -82,8 +82,4 @@ public class SystemFacadeTest implements UsersExample {
         assertThat(differentPasswordException.getMessage())
                 .isEqualTo(UserExceptionMessages.DIFFERENT_PASSWORD.getMessage());
     }
-
-
-
-
 }
