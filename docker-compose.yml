@@ -9,14 +9,17 @@ services:
     container_name: softonica-backend
     depends_on:
       - mysql-db
+      - redis
     ports:
-      - "8080:8080"
+      - "8087:8080"
     networks:
       - db-network
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/softonica
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_CACHE_REDIS_HOST: redis
+      SPRING_CACHE_REDIS_PORT: 6379
 
   mysql-db:
     image: mysql:8.0
@@ -30,6 +33,15 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+    networks:
+      - db-network
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6378:6379"
+    command: ["redis-server", "--requirepass"]
     networks:
       - db-network
 
