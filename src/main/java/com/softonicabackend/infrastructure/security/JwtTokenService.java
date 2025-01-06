@@ -2,7 +2,6 @@ package com.softonicabackend.infrastructure.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,7 +15,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class JwtTokenService {
 
-    private final HttpServletRequest request;
     private final RedisTemplate<String, Boolean> redisTemplate;
 
     public void invalidateToken(boolean isDeleted, String username) {
@@ -29,18 +27,10 @@ public class JwtTokenService {
         SecurityContextHolder.clearContext();
     }
 
-    private String getBearerTokenFromRequest() {
-        String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
-        }
-        return null;
-    }
-
     public boolean isTokenValid(String token) {
         String redisKey = getRedisKeyForToken(token);
         Boolean isValid = redisTemplate.opsForValue().get(redisKey);
-        return Boolean.TRUE.equals(isValid); // Zwróć true tylko, jeśli wartość jest true
+        return Boolean.TRUE.equals(isValid);
     }
 
     @Cacheable(cacheNames = "validTokens")
@@ -58,7 +48,6 @@ public class JwtTokenService {
         redisTemplate.opsForValue().set(redisKey, isValid, Duration.ofHours(8));
     }
 
-    // Generowanie klucza Redis dla tokenu
     private String getRedisKeyForToken(String token) {
         String username = extractUsernameFromToken(token);
         return "token:" + username + ":" + token;

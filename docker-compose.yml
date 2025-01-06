@@ -11,7 +11,7 @@ services:
       - mysql-db
       - redis
     ports:
-      - "8087:8080"
+      - "8087:8087"
     networks:
       - db-network
     environment:
@@ -41,7 +41,7 @@ services:
     container_name: redis
     ports:
       - "6378:6379"
-    command: ["redis-server", "--requirepass"]
+    command: ["redis-server"]
     networks:
       - db-network
 
