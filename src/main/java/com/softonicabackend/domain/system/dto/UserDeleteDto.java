@@ -1,4 +1,10 @@
 package com.softonicabackend.domain.system.dto;
 
-public record UserDeleteDto(String username, String token) {
+import jakarta.validation.constraints.NotBlank;
+
+public record UserDeleteDto(
+        @NotBlank(message = "{user.username.not.null}")
+        String username,
+        @NotBlank(message = "{token.not.null}")
+        String token) {
 }
