@@ -10,6 +10,7 @@ public class SystemFacade {
 
     private final UserRegistration userRegistration;
     private final UserFinder userFinderService;
+    private final UserLoginFailureService userLoginFailureService;
 
 
     public UserRegisterResponseDto register(UserRegisterDto userRegisterDto){
@@ -18,5 +19,17 @@ public class SystemFacade {
 
     public GetLoggedUserDto findUserByUsername(String username) {
         return userFinderService.getLoggedUser(username);
+    }
+
+    public void checkIfAccountIsLocked(String username) {
+        userFinderService.checkIfAccountIsLocked(username);
+    }
+
+    public void incrementFailureCount(String username) {
+        userLoginFailureService.incrementFailureCount(username);
+    }
+
+    public void resetFailureCount(String username) {
+        userLoginFailureService.resetFailureCount(username);
     }
 }

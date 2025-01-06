@@ -2,6 +2,7 @@ package com.softonicabackend.domain.system;
 
 import com.softonicabackend.domain.system.dto.GetLoggedUserDto;
 import com.softonicabackend.domain.system.exception.user.UserExceptionMessages;
+import com.softonicabackend.domain.system.exception.user.UserLockedException;
 import com.softonicabackend.domain.system.exception.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,5 +21,14 @@ class UserFinderService implements UserFinder {
                 .orElseThrow(() -> new UserNotFoundException(UserExceptionMessages.USER_NOT_FOUND.getMessage()));
         userEntity.setLastLogin(Instant.now());
         return UserMapper.mapToGetLoggedUserDto(userEntity);
+    }
+
+    @Override
+    public void checkIfAccountIsLocked(String username) {
+        UserEntity userEntity = userRepository.findByUsernameOrEmail(username)
+                .orElseThrow(() -> new UserNotFoundException(UserExceptionMessages.USER_NOT_FOUND.getMessage()));
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(UserExceptionMessages.ACCOUNT_LOCKED.getMessage());
+        }
     }
 }
