@@ -1,14 +1,13 @@
 package com.softonicabackend.infrastructure.system.user.controller;
 
 import com.softonicabackend.domain.system.SystemFacade;
+import com.softonicabackend.domain.system.dto.UserDeleteDto;
 import com.softonicabackend.infrastructure.security.JwtTokenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("api/v1/users")
 @RestController
@@ -20,10 +19,9 @@ class UserController {
     private final JwtTokenService jwtTokenService;
 
     @DeleteMapping("/delete")
-    ResponseEntity<Void> deleteUser() {
+    ResponseEntity<Void> deleteUser(@Valid @RequestBody UserDeleteDto userDeleteDto) {
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        boolean deletedUser = userFacade.deleteUserByUsername(loggedUser);
-        jwtTokenService.invalidateToken(deletedUser,loggedUser);
+        jwtTokenService.userSessionValidation(userDeleteDto, loggedUser, userFacade);
         return ResponseEntity.ok().build();
     }
 }
