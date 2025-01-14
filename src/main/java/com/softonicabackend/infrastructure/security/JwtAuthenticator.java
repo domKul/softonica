@@ -5,6 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.softonicabackend.domain.system.SystemFacade;
 import com.softonicabackend.domain.system.dto.JwtResponseDto;
 import com.softonicabackend.domain.system.dto.TokenRequestDto;
+import com.softonicabackend.domain.system.exception.user.UserExceptionMessages;
+import com.softonicabackend.domain.system.exception.user.UserLockedException;
+import com.softonicabackend.infrastructure.email.Publisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,11 +16,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+
 import java.time.*;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticator {
+public class JwtAuthenticator  extends Publisher {
 
     private final AuthenticationManager authenticationManager;
     private final Clock clock;
@@ -25,7 +29,11 @@ public class JwtAuthenticator {
     private final SystemFacade systemFacade;
 
     public JwtResponseDto authenticateAndGenerateToken(TokenRequestDto tokenRequestDto) {
-        checkAccountLockStatus(tokenRequestDto.login());
+        if (checkAccountLockStatus(tokenRequestDto.login())) {
+            String emailByUsername = systemFacade.getEmailByUsername(tokenRequestDto.login());
+            sendAccountLockedEmail(emailByUsername);
+            throw new UserLockedException(UserExceptionMessages.ACCOUNT_LOCKED.getMessage());
+        }
         try {
             Authentication authentication = authenticateUser(tokenRequestDto);
             User user = (User) authentication.getPrincipal();
@@ -38,8 +46,8 @@ public class JwtAuthenticator {
         }
     }
 
-    private void checkAccountLockStatus(String login) {
-        systemFacade.checkIfAccountIsLocked(login);
+    private boolean checkAccountLockStatus(String login) {
+        return systemFacade.checkIfAccountIsLocked(login);
     }
 
     private Authentication authenticateUser(TokenRequestDto tokenRequestDto) {
@@ -70,5 +78,10 @@ public class JwtAuthenticator {
 
     private void handleAuthenticationFailure(String login) {
         systemFacade.incrementFailureCount(login);
+    }
+
+    private void sendAccountLockedEmail(String email) {
+        String accountLockedMessage = "Your account is locked due to multiple failed login attempts.";
+        notifyObservers(accountLockedMessage, email);
     }
 }
