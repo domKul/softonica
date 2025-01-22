@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
 class UserFinderService implements UserFinder {
@@ -17,7 +18,7 @@ class UserFinderService implements UserFinder {
     @Transactional
     public GetLoggedUserDto getLoggedUser(String login) {
         UserEntity userEntity = findUserEntityByLogin(login);
-        userEntity.setLastLogin(Instant.now());
+        userEntity.setLastLogin(Instant.now().plus(1, ChronoUnit.HOURS));
         return UserMapper.mapToGetLoggedUserDto(userEntity);
     }
 

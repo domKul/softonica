@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SystemFacade {
 
-    private final UserRegisterService userRegistration;
-    private final UserFinderService userFinderService;
-
+    private final UserRegistration userRegistration;
+    private final UserFinder userFinderService;
+    private final UserLoginFailureService userLoginFailureService;
 
 
     public UserRegisterResponseDto register(UserRegisterDto userRegisterDto) {
