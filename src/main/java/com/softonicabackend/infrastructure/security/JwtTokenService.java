@@ -33,8 +33,7 @@ public class JwtTokenService {
     }
 
     public void userSessionValidation(UserDeleteDto userDeleteDto, String loggedUser, SystemFacade systemFacade) {
-        if(loggedUser.equals(userDeleteDto.username())
-                && Objects.equals(getBearerTokenFromRequest(), userDeleteDto.token())){
+        if(Objects.equals(getBearerTokenFromRequest(), userDeleteDto.token())){
             boolean deletedUser = systemFacade.deleteUserByUsername(loggedUser);
             invalidateToken(deletedUser, loggedUser);
         }

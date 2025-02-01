@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -46,12 +45,12 @@ class UserRegisterService implements UserRegistration {
         Optional<UserEntity> userOptional = userRepository.findByUsernameOrEmail(username);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            if (user.getLastlogon() == null ) {
-                return userRepository.deleteByUsername(username);
+            if (userRepository.countUserLinks(username) == 1)  {
+                userRepository.deleteByUsername(username);
             } else {
                 user.setDeleted(LocalDateTime.now());
-                return true;
             }
+            return true;
         }
         return false;
     }
