@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum UserExceptionMessages {
 
     USER_NOT_FOUND("User not found"),
+    USER_DELETED("User was deleted"),
     EMAIL_ALREADY_TAKEN("Email already taken"),
     USER_WITH_GIVEN_USERNAME_ALREADY_EXIST("User with given username already exists"),
     PRIVACY_POLICY_AND_TERMS_REQUIRED("privacy Policy And Terms Required"),

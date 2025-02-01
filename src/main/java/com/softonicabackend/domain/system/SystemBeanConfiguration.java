@@ -20,9 +20,9 @@ class SystemBeanConfiguration {
 
     @Bean
     UserRegisterService userRegisterService(UserRepository userRepository,
-                                            UserValidationChecker userValidationChecker, HttpServletRequest httpServletRequest) {
+                                            UserValidationChecker userValidationChecker) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return new UserRegisterService(userRepository, passwordEncoder, userValidationChecker,httpServletRequest);
+        return new UserRegisterService(userRepository, passwordEncoder, userValidationChecker);
     }
 
     @Bean

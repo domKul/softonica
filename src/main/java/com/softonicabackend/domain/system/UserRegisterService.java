@@ -19,7 +19,6 @@ class UserRegisterService implements UserRegistration {
     private final UserRepository userRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
     private final UserValidationChecker userValidation;
-    private final HttpServletRequest httpServletRequest;
 
     @Value("${user.registration.success}")
     private String registrationSuccessMessage;
