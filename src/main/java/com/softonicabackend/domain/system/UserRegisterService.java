@@ -2,7 +2,6 @@ package com.softonicabackend.domain.system;
 
 import com.softonicabackend.domain.system.dto.UserRegisterDto;
 import com.softonicabackend.domain.system.dto.UserRegisterResponseDto;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +25,7 @@ class UserRegisterService implements UserRegistration {
 
     @Override
     public UserRegisterResponseDto registerUser(UserRegisterDto userRegisterDto) {
-        userValidation.validationProcessor(userRegisterDto);
+        userValidation.inputValidationProcessor(userRegisterDto);
         UserEntity userToSave = createUserObjectAndPasswordEncode(userRegisterDto);
         userRepository.save(userToSave);
         return new UserRegisterResponseDto(registrationSuccessMessage);

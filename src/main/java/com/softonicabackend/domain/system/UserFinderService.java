@@ -12,15 +12,14 @@ import java.time.Instant;
 class UserFinderService implements UserFinder {
 
     private final UserRepository userRepository;
+    private final UserValidationChecker userValidationChecker;
 
     @Override
     @Transactional
     public GetLoggedUserDto getLoggedUser(String login) {
         UserEntity userEntity = userRepository.findByUsernameOrEmail(login)
                 .map(user->{
-                    if (user.getDeleted() != null) {
-                        throw new UserNotFoundException(UserExceptionMessages.USER_DELETED.getMessage());
-                    }
+                    userValidationChecker.isUserDeleted(user.getDeleted());
                     return user;
                 })
                 .orElseThrow(() -> new UserNotFoundException(UserExceptionMessages.USER_NOT_FOUND.getMessage()));

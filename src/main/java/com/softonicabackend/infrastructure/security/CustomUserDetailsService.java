@@ -29,13 +29,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Username " + username + " not found");
         }
-        return getUser(userByUsername);
-    }
-
-    private User getUser(GetLoggedUserDto userDto) {
-        return new User(
-                userDto.username(),
-                userDto.password(),
-                Collections.emptyList());
+        return new CustomUserDetails(userByUsername);
     }
 }

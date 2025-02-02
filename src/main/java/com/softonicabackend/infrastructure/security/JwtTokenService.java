@@ -33,10 +33,16 @@ public class JwtTokenService {
     }
 
     public void userSessionValidation(UserDeleteDto userDeleteDto, String loggedUser, SystemFacade systemFacade) {
-        if(Objects.equals(getBearerTokenFromRequest(), userDeleteDto.token())){
+        if(Objects.equals(getBearerTokenFromRequest(), userDeleteDto.token())
+                && Objects.equals(extractIdFromToken(userDeleteDto.token()), userDeleteDto.id())) {
             boolean deletedUser = systemFacade.deleteUserByUsername(loggedUser);
             invalidateToken(deletedUser, loggedUser);
         }
+    }
+
+    private Long extractIdFromToken(String token) {
+        DecodedJWT decodedJWT = JWT.decode(token);
+        return decodedJWT.getClaim("id").asLong();
     }
 
     private String getBearerTokenFromRequest() {

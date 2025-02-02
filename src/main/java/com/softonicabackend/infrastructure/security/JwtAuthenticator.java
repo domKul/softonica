@@ -14,14 +14,24 @@ import org.springframework.stereotype.Component;
 import java.time.*;
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticator  extends Publisher {
+public class JwtAuthenticator {
+
 
     private final AuthenticationManager authenticationManager;
     private final Clock clock;
     private final JwtConfigurationProperties properties;
-    private final JwtTokenService token;
+    private final JwtTokenService jwtTokenService;
 
-
+    public JwtResponseDto authenticateAndGenerateToken(TokenRequestDto tokenRequestDto){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(tokenRequestDto.login(),tokenRequestDto.password()));
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        String token = createToken(user);
+        String username = user.getUsername();
+        return JwtResponseDto.builder()
+                .token(token)
+                .username(username)
+                .build();
     public JwtResponseDto authenticateAndGenerateToken(TokenRequestDto tokenRequestDto) {
         if (checkAccountLockStatus(tokenRequestDto.login())) {
             String emailByUsername = systemFacade.getEmailByUsername(tokenRequestDto.login());

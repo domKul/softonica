@@ -1,6 +1,5 @@
 package com.softonicabackend.domain.system;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,8 +25,8 @@ class SystemBeanConfiguration {
     }
 
     @Bean
-    UserFinderService userFinderService(UserRepository userRepository) {
-        return new UserFinderService(userRepository);
+    UserFinderService userFinderService(UserRepository userRepository, UserValidationChecker userValidationChecker) {
+        return new UserFinderService(userRepository, userValidationChecker);
     }
 
     @Bean
