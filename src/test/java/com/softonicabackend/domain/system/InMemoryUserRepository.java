@@ -37,6 +37,13 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return database.values().stream()
+                .filter(user -> user.getUsername().equals(username))
+                .findFirst();
+    }
+
+    @Override
     public void flush() {
 
     }
