@@ -59,4 +59,20 @@ class UserEntity {
     public int hashCode() {
         return Objects.hash(id, username, password, email);
     }
+
+    public void incrementFailures() {
+        if (this.failures < 4) {
+            this.failures++;
+        }
+    }
+
+    public void resetFailures() {
+        this.failures = 0;
+    }
+
+    public void lockIfNecessary() {
+        if (this.failures == 3) {
+            this.locked = true;
+        }
+    }
 }

@@ -1,18 +1,15 @@
 package com.softonicabackend.domain.system;
 
+import com.softonicabackend.domain.system.dto.GetLoggedUserDto;
 import com.softonicabackend.domain.system.dto.UserRegisterDto;
 import com.softonicabackend.domain.system.dto.UserRegisterResponseDto;
-import com.softonicabackend.domain.system.exception.user.DifferentPasswordException;
-import com.softonicabackend.domain.system.exception.user.PrivacyPolicyAndTermsException;
-import com.softonicabackend.domain.system.exception.user.UserAlreadyExistException;
-import com.softonicabackend.domain.system.exception.user.UserExceptionMessages;
+import com.softonicabackend.domain.system.exception.user.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SystemFacadeTest implements UsersExample {
 
@@ -82,4 +79,80 @@ public class SystemFacadeTest implements UsersExample {
         assertThat(differentPasswordException.getMessage())
                 .isEqualTo(UserExceptionMessages.DIFFERENT_PASSWORD.getMessage());
     }
+
+    @Test
+    void shouldGetUserByUsernameSuccessfully() {
+        //Given
+        UserRegisterDto user = user1WithCorrectBody();
+        systemFacade.register(user);
+        //When
+        GetLoggedUserDto userByUsername = systemFacade.findUserByUsername(user.username());
+
+        //Then
+        assertAll(
+                () -> assertThat(user.username()).isEqualTo(userByUsername.username()),
+                () -> assertThat(passwordEncoder.matches(user.password(), userByUsername.password())).isTrue()
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTryingToFindUserByUsernameWithWrongUsername() {
+        //Given
+        UserRegisterDto user = user1WithCorrectBody();
+        systemFacade.register(user);
+        //When
+        UserNotFoundException userNotFoundException = assertThrows(UserNotFoundException.class,
+                () -> systemFacade.findUserByUsername("wrongUsername"));
+        //Then
+        assertThat(userNotFoundException.getMessage())
+                .isEqualTo(UserExceptionMessages.USER_NOT_FOUND.getMessage());
+
+    }
+
+    @Test
+    void shouldCheckIfUserIsLockedOnNot() {
+        //Given
+        UserRegisterDto user = user1WithCorrectBody();
+        systemFacade.register(user);
+        //When
+        boolean accountCheck = systemFacade.checkIfAccountIsLocked(user.username());
+        //Then
+        assertFalse(accountCheck);
+    }
+
+    @Test
+    void shouldIncrementFailureCounter() {
+        // Given
+        UserRegisterDto user = user1WithCorrectBody();
+        systemFacade.register(user);
+        assertFalse(systemFacade.checkIfAccountIsLocked(user.username()));
+        // When
+        systemFacade.incrementFailureCount(user.username());
+        systemFacade.incrementFailureCount(user.username());
+        systemFacade.incrementFailureCount(user.username());
+        // Then
+        boolean accountCheck = systemFacade.checkIfAccountIsLocked(user.username());
+        assertTrue(accountCheck, "Account should be locked after 3 failed attempts");
+    }
+
+//    @Test
+//    void shouldResetFailureCounter() {
+//        //Given
+//        UserRegisterDto user = user1WithCorrectBody();
+//        systemFacade.register(user);
+//        systemFacade.incrementFailureCount(user.username());
+//        systemFacade.incrementFailureCount(user.username());
+//        systemFacade.incrementFailureCount(user.username());
+//        boolean accountBeforeRest = systemFacade.checkIfAccountIsLocked(user.username());
+//        //When
+//        systemFacade.resetFailureCount(user.username());
+//        //Then
+//        boolean accountAfterReset = systemFacade.checkIfAccountIsLocked(user.username());
+//        assertAll(
+//                ()-> assertTrue(accountBeforeRest, "Account should be locked after 3 failed attempts"),
+//                ()-> assertFalse(accountAfterReset, "Account should be unlocked")
+//
+//        );
+//    }
+
 }

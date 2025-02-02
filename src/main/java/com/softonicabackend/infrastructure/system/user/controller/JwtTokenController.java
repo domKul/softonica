@@ -22,7 +22,7 @@ class JwtTokenController {
     private final JwtAuthenticator jwtAuthenticator;
 
     @PostMapping("/login")
-    ResponseEntity<JwtResponseDto> authAndGenerateToken(@RequestBody @Valid TokenRequestDto tokenRequestDto){
+    ResponseEntity<JwtResponseDto> authAndGenerateToken(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
         JwtResponseDto generateToken = jwtAuthenticator.authenticateAndGenerateToken(tokenRequestDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(generateToken);
     }

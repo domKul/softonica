@@ -1,11 +1,9 @@
 package com.softonicabackend.infrastructure.validation;
 
-import com.softonicabackend.domain.system.exception.user.DifferentPasswordException;
-import com.softonicabackend.domain.system.exception.user.PrivacyPolicyAndTermsException;
-import com.softonicabackend.domain.system.exception.user.UserAlreadyExistException;
-import com.softonicabackend.domain.system.exception.user.UserNotFoundException;
+import com.softonicabackend.domain.system.exception.user.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -75,5 +73,29 @@ public class GlobalExceptionHandler {
                 localDateTime.format(formatter)
         );
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(UserLockedException.class)
+    public ResponseEntity<ErrorResponse> handleUserLockedException(UserLockedException e) {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        ErrorResponse errors = new ErrorResponse(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                localDateTime.format(formatter)
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        ErrorResponse errors = new ErrorResponse(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                localDateTime.format(formatter)
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }
 }

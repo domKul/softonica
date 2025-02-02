@@ -14,6 +14,8 @@ public class SystemTestConfiguration {
 
     SystemFacade systemFacade(){
         return new SystemFacade(new UserRegisterService(inMemoryUserRepository,passwordEncoder,
-                new UserValidationChecker(inMemoryUserRepository)),new UserFinderService(inMemoryUserRepository));
+                new UserValidationChecker(inMemoryUserRepository))
+                ,new UserFinderService(inMemoryUserRepository)
+                ,new UserLoginFailureService(inMemoryUserRepository));
     }
 }

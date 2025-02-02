@@ -8,8 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 class SystemBeanConfiguration {
     @Bean
-    SystemFacade systemFacade(UserRegisterService userRegistration,UserFinderService userFinder) {
-        return new SystemFacade(userRegistration, userFinder);
+    SystemFacade systemFacade(UserRegistration userRegistration,UserFinder userFinder, UserLoginFailureService userLoginFailureService) {
+        return new SystemFacade(userRegistration, userFinder, userLoginFailureService);
     }
 
     @Bean
@@ -27,5 +27,10 @@ class SystemBeanConfiguration {
     @Bean
     UserFinderService userFinderService(UserRepository userRepository) {
         return new UserFinderService(userRepository);
+    }
+
+    @Bean
+    UserLoginFailureService userLoginFailureService(UserRepository userRepository) {
+        return new UserLoginFailureService(userRepository);
     }
 }

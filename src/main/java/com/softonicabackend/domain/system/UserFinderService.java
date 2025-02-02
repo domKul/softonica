@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
 class UserFinderService implements UserFinder {
@@ -16,9 +17,24 @@ class UserFinderService implements UserFinder {
     @Override
     @Transactional
     public GetLoggedUserDto getLoggedUser(String login) {
-        UserEntity userEntity = userRepository.findByUsernameOrEmail(login)
-                .orElseThrow(() -> new UserNotFoundException(UserExceptionMessages.USER_NOT_FOUND.getMessage()));
-        userEntity.setLastLogin(Instant.now());
+        UserEntity userEntity = findUserEntityByLogin(login);
+        userEntity.setLastLogin(Instant.now().plus(1, ChronoUnit.HOURS));
         return UserMapper.mapToGetLoggedUserDto(userEntity);
+    }
+
+    @Override
+    public boolean checkIfAccountIsLocked(String username) {
+        UserEntity userEntity = findUserEntityByLogin(username);
+        return userEntity.isLocked();
+    }
+
+    public String getEmailByUsername(String username) {
+        return findUserEntityByLogin(username).getEmail();
+    }
+
+    private UserEntity findUserEntityByLogin(String login) {
+        return userRepository.findByUsernameOrEmail(login)
+                .orElseThrow(() -> new UserNotFoundException(
+                        UserExceptionMessages.USER_NOT_FOUND.getMessage()));
     }
 }
