@@ -33,7 +33,10 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public Optional<UserEntity> findByUsernameOrEmail(String login) {
-        return Optional.empty();
+        return database.values().stream()
+                .filter(user->user.getUsername().equals(login)
+                        || user.getEmail().equals(login))
+                .findFirst();
     }
 
     @Override

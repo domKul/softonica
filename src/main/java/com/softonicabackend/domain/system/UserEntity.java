@@ -71,7 +71,7 @@ class UserEntity {
     }
 
     public void lockIfNecessary() {
-        if (this.failures > 3) {
+        if (this.failures == 3) {
             this.locked = true;
         }
     }

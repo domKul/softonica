@@ -34,6 +34,7 @@ class UserFinderService implements UserFinder {
 
     private UserEntity findUserEntityByLogin(String login) {
         return userRepository.findByUsernameOrEmail(login)
-                .orElseThrow(() -> new UserNotFoundException(UserExceptionMessages.USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new UserNotFoundException(
+                        UserExceptionMessages.USER_NOT_FOUND.getMessage()));
     }
 }
