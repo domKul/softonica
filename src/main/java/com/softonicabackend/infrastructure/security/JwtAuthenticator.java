@@ -60,7 +60,7 @@ public class JwtAuthenticator extends Publisher {
         String secretKey = properties.secret();
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         Instant now = LocalDateTime.now(clock).toInstant(ZoneOffset.UTC);
-        Instant expiresAt = now.plus(Duration.ofDays(properties.expirationTimeInHours()));
+        Instant expiresAt = now.plus(Duration.ofHours(properties.expirationTimeInHours()));
         String issuer = properties.issuer();
         String jwt = JWT.create()
                 .withSubject(user.getUsername())
