@@ -47,6 +47,16 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public void deleteByUsername(String username) {
+
+    }
+
+    @Override
+    public int countUserLinks(String username) {
+        return 0;
+    }
+
+    @Override
     public void flush() {
 
     }
