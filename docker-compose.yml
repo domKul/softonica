@@ -8,8 +8,10 @@ services:
       dockerfile: Dockerfile
     container_name: softonica-backend
     depends_on:
-      - mysql-db
-      - redis
+      mysql-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "8087:8087"
     networks:
@@ -20,10 +22,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_CACHE_REDIS_HOST: redis
       SPRING_CACHE_REDIS_PORT: 6379
+    restart: unless-stopped
 
   mysql-db:
     image: mysql:8.0
-    container_name: softonica
+    container_name: softonica-db
     environment:
       MYSQL_ROOT_PASSWORD: dev
       MYSQL_DATABASE: softonica
@@ -35,18 +38,33 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uadmin", "-padmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7.0
     container_name: redis
     ports:
-      - "6378:6379"
+      - "6379:6379"
     command: ["redis-server"]
     networks:
       - db-network
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 volumes:
   mysql-data:
+  redis-data:
 
 networks:
   db-network:
