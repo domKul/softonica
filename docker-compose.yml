@@ -12,6 +12,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mailhog:
+        condition: service_healthy
     ports:
       - "8087:8087"
     networks:
@@ -22,6 +24,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_CACHE_REDIS_HOST: redis
       SPRING_CACHE_REDIS_PORT: 6379
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: 1025
     restart: unless-stopped
 
   mysql-db:
@@ -58,6 +62,21 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "1025:1025"  # Port SMTP
+      - "8025:8025"  # Interfejs webowy MailHog
+    networks:
+      - db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8025"]
       interval: 5s
       timeout: 3s
       retries: 5
