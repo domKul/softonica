@@ -135,24 +135,24 @@ public class SystemFacadeTest implements UsersExample {
         assertTrue(accountCheck, "Account should be locked after 3 failed attempts");
     }
 
-//    @Test
-//    void shouldResetFailureCounter() {
-//        //Given
-//        UserRegisterDto user = user1WithCorrectBody();
-//        systemFacade.register(user);
-//        systemFacade.incrementFailureCount(user.username());
-//        systemFacade.incrementFailureCount(user.username());
-//        systemFacade.incrementFailureCount(user.username());
-//        boolean accountBeforeRest = systemFacade.checkIfAccountIsLocked(user.username());
-//        //When
-//        systemFacade.resetFailureCount(user.username());
-//        //Then
-//        boolean accountAfterReset = systemFacade.checkIfAccountIsLocked(user.username());
-//        assertAll(
-//                ()-> assertTrue(accountBeforeRest, "Account should be locked after 3 failed attempts"),
-//                ()-> assertFalse(accountAfterReset, "Account should be unlocked")
-//
-//        );
-//    }
+    @Test
+    void shouldResetFailureCounter() {
+        //Given
+        UserRegisterDto user = user1WithCorrectBody();
+        systemFacade.register(user);
+        systemFacade.incrementFailureCount(user.username());
+        systemFacade.incrementFailureCount(user.username());
+        systemFacade.incrementFailureCount(user.username());
+        boolean accountBeforeRest = systemFacade.checkIfAccountIsLocked(user.username());
+        //When
+        systemFacade.resetFailureCount(user.username());
+        //Then
+        boolean accountAfterReset = systemFacade.checkIfAccountIsLocked(user.username());
+        assertAll(
+                ()-> assertTrue(accountBeforeRest, "Account should be locked after 3 failed attempts"),
+                ()-> assertFalse(accountAfterReset, "Account should be unlocked")
+
+        );
+    }
 
 }

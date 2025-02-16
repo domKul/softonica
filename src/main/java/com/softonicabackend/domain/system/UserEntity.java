@@ -69,6 +69,9 @@ class UserEntity {
 
     public void resetFailures() {
         this.failures = 0;
+        if(this.locked){
+            this.locked = false;
+        }
     }
 
     public void lockIfNecessary() {

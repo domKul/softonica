@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
+import static jakarta.mail.Transport.send;
+
 @Component
 public class LockEmailNotifier implements Observer {
     private final String smtpHost;
@@ -43,7 +45,7 @@ public class LockEmailNotifier implements Observer {
             mimeMessage.setSubject("Account Blocked");
             mimeMessage.setText(message);
 
-            jakarta.mail.Transport.send(mimeMessage);
+            send(mimeMessage);
         } catch (MessagingException mex) {
             mex.printStackTrace();
         }
