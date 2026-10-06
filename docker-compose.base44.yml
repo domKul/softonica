@@ -1,0 +1,96 @@
+services:
+  app:
+    image: maven:3.8.1-openjdk-17-slim
+    working_dir: /app
+    volumes:
+      - .:/app
+      - maven-cache:/root/.m2
+    ports:
+      - "3000:8087"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailhog:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/softonica
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: "1025"
+    command:
+      - sh
+      - -ec
+      - |
+        command -v curl >/dev/null 2>&1 || (apt-get update -qq && apt-get install -y -qq curl >/dev/null 2>&1) || true
+        mvn spring-boot:run -Dspring-boot.run.fork=true &
+        APP_PID=$!
+        LAST=$(find src/main/java src/main/resources -type f -exec md5sum {} + 2>/dev/null | sort | md5sum)
+        while kill -0 $$APP_PID 2>/dev/null; do
+          sleep 3
+          CUR=$(find src/main/java src/main/resources -type f -exec md5sum {} + 2>/dev/null | sort | md5sum)
+          if [ "$$LAST" != "$$CUR" ]; then
+            LAST="$$CUR"
+            echo 'Source change detected, recompiling...'
+            mvn compile -q 2>&1 | tail -5 || true
+          fi
+        done
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8087/v3/api-docs || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 600s
+
+  mysql-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: dev
+      MYSQL_DATABASE: softonica
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uadmin", "-padmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: redis:7.0
+    command: ["redis-server"]
+    volumes:
+      - redis-data:/data
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8025"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  mysql-data:
+  redis-data:
+  maven-cache:
